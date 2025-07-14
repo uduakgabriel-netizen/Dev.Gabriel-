@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev. Gabriel - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Particles.js Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- Font Awesome for Icons (Sun/Moon, Bars/Times) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --bg-primary: #1a202c; /* Dark background */
+            --bg-secondary: #171c26; /* Slightly darker for alternating sections */
+            --text-primary: #ffffff; /* White text */
+            --text-secondary: #d1d5db; /* Gray text */
+            --accent-color: #3b82f6; /* Blue accent */
+            --card-bg: #1f2937; /* Card background */
+            --nav-bg: #1a202c; /* Nav background */
+            --border-color: #4b5563; /* Border color */
+            --particle-color: #ffffff; /* Particle color for dark mode */
+            --particle-line-color: #ffffff; /* Particle line color for dark mode */
+            --section-bg-opacity: 0.85; /* Opacity for section backgrounds */
+            --nav-bg-opacity: 0.95; /* Opacity for nav background */
+        }
+
+        /* Light Mode Variables */
+        body.light-mode {
+            --bg-primary: #f3f4f6; /* Light background */
+            --bg-secondary: #e5e7eb; /* Slightly darker light for alternating sections */
+            --text-primary: #1f2937; /* Dark text */
+            --text-secondary: #4b5563; /* Gray text */
+            --accent-color: #2563eb; /* Darker blue accent */
+            --card-bg: #ffffff; /* Light card background */
+            --nav-bg: #f3f4f6; /* Light nav background */
+            --border-color: #d1d5db; /* Light border color */
+            --particle-color: #4b5563; /* Darker particle color for light mode */
+            --particle-line-color: #6b7280; /* Darker particle line color for light mode */
+            --section-bg-opacity: 0.95; /* Higher opacity for sections in light mode */
+            --nav-bg-opacity: 0.98; /* Higher opacity for nav in light mode */
+        }
+
+        /* Apply variables to elements */
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            position: relative;
+            z-index: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+        }
+
+        /* Body overflow hidden when mobile menu is open */
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: var(--bg-primary); /* Particles background matches body */
+            z-index: -1;
+            transition: background-color 0.3s ease;
+        }
+        
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 6rem 1rem;
+            text-align: center;
+            background-color: rgba(var(--bg-primary-rgb), var(--section-bg-opacity)); /* Using rgba with opacity */
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Helper for rgba conversion - Tailwind doesn't directly support var() in rgba() */
+        body:not(.light-mode) section {
+            background-color: rgba(30, 41, 59, var(--section-bg-opacity)); /* Dark mode specific */
+        }
+        body.light-mode section {
+            background-color: rgba(229, 231, 235, var(--section-bg-opacity)); /* Light mode specific */
+        }
+
+        body:not(.light-mode) #about, body:not(.light-mode) #experience, body:not(.light-mode) #contact {
+            background-color: rgba(23, 30, 41, var(--section-bg-opacity)); /* Dark mode specific */
+        }
+        body.light-mode #about, body.light-mode #experience, body.light-mode #contact {
+            background-color: rgba(243, 244, 246, var(--section-bg-opacity)); /* Light mode specific */
+        }
+
+
+        /* Hero Text Animation - Fade In Up */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .fade-in-up-delay-1 {
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typing Effect for Tagline */
+        .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: .15em solid var(--text-primary); /* Cursor color changes with theme */
+            animation: 
+                typing 3.5s steps(30, end) forwards,
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--text-primary); }
+        }
+
+        #home {
+            padding-top: 10rem;
+            background-color: transparent;
+            min-height: calc(100vh - 4rem); 
+            margin-bottom: 0;
+            box-shadow: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
+        }
+
+        /* Skill Card Hover Effect */
+        .skill-card, .project-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+            background-color: var(--card-bg);
+        }
+
+        .skill-card:hover, .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.2), 0 6px 10px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Navigation Bar Styling */
+        nav {
+            background-color: rgba(var(--nav-bg-rgb), var(--nav-bg-opacity));
+            transition: background-color 0.3s ease;
+        }
+        body:not(.light-mode) nav {
+            background-color: rgba(26, 32, 44, var(--nav-bg-opacity));
+        }
+        body.light-mode nav {
+            background-color: rgba(243, 244, 246, var(--nav-bg-opacity));
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: var(--text-primary);
+        }
+        nav a.text-blue-400 { /* For the brand name */
+            color: var(--accent-color);
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: var(--nav-bg); /* Footer uses nav background */
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        footer a {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: color-mix(in srgb, var(--accent-color) 80%, black); /* Darken on hover */
+        }
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: color-mix(in srgb, var(--card-bg) 80%, black); /* Darken on hover */
+        }
+
+        /* Mobile Menu Styling */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%; /* Full width on mobile */
+            max-width: 300px; /* Max width for the slide-out menu */
+            height: 100%;
+            background-color: var(--nav-bg); /* Use nav background for menu */
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.3s ease-in-out;
+            z-index: 40; /* Below nav, above content */
+            padding-top: 5rem; /* Space for close button */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+        }
+
+        #mobile-menu.open {
+            transform: translateX(0); /* Slide in */
+        }
+
+        #mobile-menu .mobile-nav-link {
+            padding: 1rem 0;
+            width: 80%; /* Make links wider for easier tapping */
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        #mobile-menu .mobile-nav-link:last-child {
+            border-bottom: none;
+        }
+        #mobile-menu .mobile-nav-link:hover {
+            background-color: var(--card-bg);
+        }
+
+        #mobile-menu-close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 50; /* Ensure close button is clickable */
+        }
+
+        /* Mobile Responsiveness Adjustments */
+        @media (max-width: 1023px) { /* Apply below large breakpoint (lg) */
+            .desktop-nav-links {
+                display: none; /* Hide desktop links on mobile */
+            }
+            .mobile-menu-toggle {
+                display: block; /* Show hamburger icon on mobile */
+            }
+        }
+
+        @media (min-width: 1024px) { /* Apply from large breakpoint (lg) and up */
+            .desktop-nav-links {
+                display: flex !important; /* Ensure desktop links are visible */
+            }
+            .mobile-menu-toggle {
+                display: none; /* Hide hamburger icon on desktop */
+            }
+            #mobile-menu {
+                display: none; /* Hide mobile menu on desktop */
+            }
+        }
+
+        @media (max-width: 768px) {
+            #home h1 {
+                font-size: 3.5rem; /* Smaller font for mobile heading */
+            }
+            #home p {
+                font-size: 1.5rem; /* Smaller font for mobile tagline */
+            }
+            section {
+                padding: 4rem 0.5rem; /* Reduced padding on mobile sections */
+                margin-bottom: 1rem; /* Less space between sections on mobile */
+            }
+            .skill-card {
+                padding: 1rem; /* Smaller padding for skill cards */
+            }
+            .skill-card img {
+                width: 4rem; /* Smaller logos on mobile */
+                height: 4rem;
+            }
+            .skill-card p {
+                font-size: 1rem; /* Smaller skill text on mobile */
+            }
+            .project-card {
+                padding: 1.5rem; /* Smaller padding for project cards */
+            }
+            .project-card h3 {
+                font-size: 1.5rem; /* Smaller project title on mobile */
+            }
+            .project-card p {
+                font-size: 0.9rem; /* Smaller project description on mobile */
+            }
+            .flex-col.sm\:flex-row { /* Adjust for hero buttons */
+                flex-direction: column; 
+            }
+            .gap-4 { /* Adjust for hero buttons */
+                gap: 1rem;
+            }
+            .md\:space-x-12 {
+                space-x: 0; /* Remove horizontal spacing on mobile footer links */
+            }
+            .md\:text-left {
+                text-align: center; /* Center align footer sections on mobile */
+            }
+            .md\:mb-0 {
+                margin-bottom: 1rem; /* Add some margin to footer elements on mobile */
+            }
+            .md\:flex-row {
+                flex-direction: column; /* Ensure footer sections stack */
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode"> <!-- Default to dark mode -->
+
+    <!-- Particles.js container -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-3xl font-extrabold text-blue-400 hover:text-blue-300 transition duration-300">Dev. Gabriel</a>
+            
+            <!-- Desktop Navigation Links -->
+            <div class="desktop-nav-links hidden lg:flex items-center space-x-6 text-lg">
+                <a href="#about" class="hover:text-white transition duration-300">About</a>
+                <a href="#skills" class="hover:text-white transition duration-300">Skills</a>
+                <a href="#experience" class="hover:text-white transition duration-300">Experience</a>
+                <a href="#projects" class="hover:text-white transition duration-300">Projects</a>
+                <a href="#contact" class="hover:text-white transition duration-300">Contact</a>
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+                    <i class="fas fa-sun text-yellow-400 text-xl"></i> 
+                    <i class="fas fa-moon text-gray-300 text-xl hidden"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button (Hamburger) -->
+            <div class="mobile-menu-toggle lg:hidden flex items-center space-x-4">
+                <!-- Theme Toggle Button for Mobile (moved here for better visibility on small screens) -->
+                <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+                    <i class="fas fa-sun text-yellow-400 text-xl"></i> 
+                    <i class="fas fa-moon text-gray-300 text-xl hidden"></i>
+                </button>
+                <button id="mobile-menu-open-btn" class="text-white text-2xl focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="lg:hidden">
+        <button id="mobile-menu-close-btn" class="focus:outline-none">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#home" class="mobile-nav-link">Home</a>
+        <a href="#about" class="mobile-nav-link">About</a>
+        <a href="#skills" class="mobile-nav-link">Skills</a>
+        <a href="#experience" class="mobile-nav-link">Experience</a>
+        <a href="#projects" class="mobile-nav-link">Projects</a>
+        <a href="#contact" class="mobile-nav-link">Contact</a>
+    </div>
+
+    <!-- Home/Hero Section -->
+    <section id="home" class="relative">
+        <h1 class="text-6xl md:text-7xl font-extrabold mb-4 fade-in-up text-blue-400">Dev. Gabriel</h1>
+        <p class="text-2xl md:text-3xl text-gray-300 fade-in-up fade-in-up-delay-1">
+            <span id="typed-text" class="typing-text"></span>
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row gap-4 fade-in-up fade-in-up-delay-1">
+            <a href="#about" class="btn-primary font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                About Me
+            </a>
+            <a href="#projects" class="btn-secondary font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                My Work
+            </a>
+            <a href="#contact" class="btn-secondary font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                Get In Touch
+            </a>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="relative">
+        <h2 class="text-4xl md:text-5xl font-semibold mb-8">About Me</h2>
+        <p class="max-w-4xl mx-auto text-lg md:text-xl leading-relaxed px-4" style="color:var(--text-secondary);">
+            I am a dedicated software engineer with expertise in various programming languages, backend development, database management, and DevOps. My professional experience includes improving implementation speed by 50% and reducing operational costs by 70%. I am a passionate problem-solver with a strong desire to create impactful and efficient software solutions.
+        </p>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="relative">
+        <h2 class="text-4xl md:text-5xl font-semibold mb-12">Technical Skills</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl w-full px-4">
+            <!-- Skill Item: Python -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">Python</p>
+            </div>
+            <!-- Skill Item: JavaScript -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">JavaScript</p>
+            </div>
+            <!-- Skill Item: MySQL -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">MySQL</p>
+            </div>
+            <!-- Skill Item: Java -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">Java</p>
+            </div>
+            <!-- Skill Item: React -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">React</p>
+            </div>
+            <!-- Skill Item: Django -->
+            <div class="skill-card p-6 rounded-lg shadow-xl flex flex-col items-center">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg" alt="Django Logo" class="w-16 h-16 mb-4">
+                <p class="text-xl font-medium" style="color:var(--text-primary);">Django</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="relative">
+        <h2 class="text-4xl md:text-5xl font-semibold mb-12">Professional Experience</h2>
+        <div class="space-y-12 max-w-4xl w-full px-4">
+            <div class="p-8 rounded-lg shadow-xl text-left" style="background-color:var(--card-bg);">
+                <h3 class="text-2xl font-bold" style="color:var(--accent-color);">Full-Stack Developer</h3>
+                <p class="mb-2" style="color:var(--text-secondary);">Sequential Job | 2022 - Present</p>
+                <ul class="list-disc list-inside space-y-2" style="color:var(--text-secondary);">
+                    <li>Developed and maintained web applications, improving implementation speed by 70%.</li>
+                    <li>Collaborated with cross-functional teams to deliver high-quality software solutions.</li>
+                    <li>Implemented RESTful APIs and integrated with various third-party services.</li>
+                </ul>
+            </div>
+            <div class="p-8 rounded-lg shadow-xl text-left" style="background-color:var(--card-bg);">
+                <h3 class="text-2xl font-bold" style="color:var(--accent-color);">Backend Engineer</h3>
+                <p class="mb-2" style="color:var(--text-secondary);">E-Infotech Systems & Telecom | 2020 - 2022</p>
+                <ul class="list-disc list-inside space-y-2" style="color:var(--text-secondary);">
+                    <li>Designed and implemented robust backend services, reducing operational costs by 70%.</li>
+                    <li>Managed database systems and optimized queries for performance.</li>
+                    <li>Participated in system architecture design and deployment processes.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="relative">
+        <h2 class="text-4xl md:text-5xl font-semibold mb-12">My Work</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full px-4">
+            <div class="project-card p-6 rounded-lg shadow-xl">
+                <h3 class="text-2xl font-bold mb-3" style="color:var(--accent-color);">Apple Resort</h3>
+                <p class="mb-4 text-base" style="color:var(--text-secondary);">I built an e-commerce website that enables users to browse and purchase Apple products online.
+The site features a clean UI, secure checkout, and responsive design for seamless shopping.</p>
+                 <a href="#" class="btn-primary font-bold py-2 px-4 rounded transition duration-300">View Project</a>
+            </div>
+            <div class="project-card p-6 rounded-lg shadow-xl">
+                <h3 class="text-2xl font-bold mb-3" style="color:var(--accent-color);">Africa Agro Visionarise</h3>
+                <p class="mb-4 text-base" style="color:var(--text-secondary);">Built a responsive website "Africa Agro Visionaries" to support African farmers with resources and aid.
+Includes key sections for services, testimonials, and contact to boost engagement.</p>
+                <a href="#" class="btn-primary font-bold py-2 px-4 rounded transition duration-300">View Project</a>
+            </div>
+            <div class="project-card p-6 rounded-lg shadow-xl">
+                <h3 class="text-2xl font-bold mb-3" style="color:var(--accent-color);">ELLI Interior</h3>
+                <p class="mb-4 text-base" style="color:var(--text-secondary);"> Built the ELLI Interior website using HTML and CSS to showcase modern interior design services.
+The site features a responsive layout, smooth animations, and elegant UI to attract and inform clients.</p>
+                <a href="#" class="btn-primary font-bold py-2 px-4 rounded transition duration-300">View Project</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="relative">
+        <h2 class="text-4xl md:text-5xl font-semibold mb-8">Get In Touch</h2>
+        <p class="text-lg md:text-xl mb-10 max-w-3xl px-4" style="color:var(--text-secondary);">
+            I'm always open to new opportunities, collaborations, and discussions about technology. Feel free to reach out through any of the channels below!
+        </p>
+        <div class="flex flex-col md:flex-row gap-6">
+            <a href="mailto:youremail@example.com" class="btn-primary font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                Email Me
+            </a>
+            <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn-secondary font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                Connect on LinkedIn
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 mt-8" style="background-color:var(--nav-bg); border-top: 1px solid var(--border-color);">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="mb-6 md:mb-0">
+                    <a href="#home" class="text-2xl font-bold hover:text-blue-400 transition duration-300" style="color:var(--text-primary);">Dev. Gabriel</a>
+                    <p class="mt-2" style="color:var(--text-secondary);">Software Engineer | Innovator</p>
+                </div>
+                <div class="flex flex-col md:flex-row md:space-x-12 space-y-4 md:space-y-0">
+                    <div class="text-center md:text-left">
+                        <h4 class="text-xl font-semibold mb-3" style="color:var(--text-primary);">Quick Links</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#about" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">About</a></li>
+                            <li><a href="#skills" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">Skills</a></li>
+                            <li><a href="#projects" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">Projects</a></li>
+                        </ul>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h4 class="text-xl font-semibold mb-3" style="color:var(--text-primary);">Connect</h4>
+                        <ul class="space-y-2">
+                            <li><a href="mailto:youremail@example.com" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">Email</a></li>
+                            <li><a href="https://linkedin.com/in/yourprofile" target="_blank" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">LinkedIn</a></li>
+                            <li><a href="https://github.com/yourusername" target="_blank" class="hover:text-white transition duration-300" style="color:var(--text-secondary);">GitHub</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t pt-6 text-center text-sm" style="border-color:var(--border-color); color:var(--text-secondary);">
+                <p>&copy; 2024 Dev. Gabriel. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Particles.js Initialization - now dynamic for theme
+        let particlesInstance; // To store the particles.js instance
+
+        function initializeParticles(particleColor, particleLineColor, bgColor) {
+            if (particlesInstance) {
+                // Destroy existing instance if it exists to reinitialize
+                particlesInstance.fn.vendors.destroypJS();
+                particlesInstance = null;
+            }
+
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80, 
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": particleColor 
+                    },
+                    "shape": {
+                        "type": "circle", 
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3, 
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150, 
+                        "color": particleLineColor, 
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 3, 
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab" 
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push" 
+                        },
+                        "resize": true
+                        /* Removed mousemove event as it's not needed for this particle effect */
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+            particlesInstance = window.pJS; // Store the instance
+            document.getElementById('particles-js').style.backgroundColor = bgColor; // Set background color of canvas
+        }
+
+        // Theme Toggle Logic
+        const themeToggleBtnDesktop = document.getElementById('theme-toggle');
+        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+        const body = document.body;
+
+        function updateThemeIcons(isLightMode) {
+            const sunIcons = document.querySelectorAll('.fa-sun');
+            const moonIcons = document.querySelectorAll('.fa-moon');
+
+            sunIcons.forEach(icon => {
+                if (isLightMode) {
+                    icon.classList.add('hidden');
+                } else {
+                    icon.classList.remove('hidden');
+                }
+            });
+            moonIcons.forEach(icon => {
+                if (isLightMode) {
+                    icon.classList.remove('hidden');
+                } else {
+                    icon.classList.add('hidden');
+                }
+            });
+        }
+
+        function setTheme(mode) {
+            if (mode === 'light') {
+                body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+                updateThemeIcons(true);
+            } else {
+                body.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+                updateThemeIcons(false);
+            }
+            // Reinitialize particles with new colors after theme change
+            initializeParticles(
+                getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--particle-line-color').trim(),
+                getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim()
+            );
+        }
+
+        // Mobile Menu Logic
+        const mobileMenuOpenBtn = document.getElementById('mobile-menu-open-btn');
+        const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileNavLinks = document.querySelectorAll('#mobile-menu .mobile-nav-link');
+
+        mobileMenuOpenBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            body.classList.add('menu-open'); // Prevent scrolling on body
+        });
+
+        mobileMenuCloseBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            body.classList.remove('menu-open');
+        });
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                body.classList.remove('menu-open');
+                // Smooth scroll handled by 'scroll-smooth' on html tag
+            });
+        });
+
+
+        // Initialize theme and particles on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                setTheme('light');
+            } else {
+                setTheme('dark'); // Default to dark mode
+            }
+
+            // Typing effect initialization
+            const textElement = document.getElementById('typed-text');
+            const phrases = ["Tech Enthusiast", "Software Engineer", "Problem Solver"];
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let typingSpeed = 150; // milliseconds per character
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                if (isDeleting) {
+                    textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let currentTypingSpeed = typingSpeed;
+                if (isDeleting) {
+                    currentTypingSpeed /= 2; // Faster deleting
+                }
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    currentTypingSpeed = 2000; // Pause at end of phrase
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length; // Move to next phrase
+                    currentTypingSpeed = 500; // Short pause before typing next phrase
+                }
+
+                setTimeout(type, currentTypingSpeed);
+            }
+
+            if (textElement) { 
+                type();
+            }
+        });
+
+        // Event listeners for theme toggle buttons
+        if (themeToggleBtnDesktop) {
+            themeToggleBtnDesktop.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'dark') {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+        }
+        if (themeToggleBtnMobile) {
+            themeToggleBtnMobile.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'dark') {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
